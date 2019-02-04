@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.support.GenericMessage;
@@ -24,10 +25,8 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("key", "value");
-		MessageHeaders headers = new MessageHeaders(map); 
-		Message<String> message = new GenericMessage<String>("Hello World", headers);
+		Message<String> message = MessageBuilder.withPayload("Hello World, from the builder pattern")
+				.setHeader("newHeader", "newHeaderValue").build();
 		
 		PrintService printService = new PrintService();
 		printService.print(message);
