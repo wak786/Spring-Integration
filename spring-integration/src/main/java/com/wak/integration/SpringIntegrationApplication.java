@@ -24,7 +24,10 @@ import org.springframework.messaging.support.GenericMessage;
 public class SpringIntegrationApplication implements ApplicationRunner {
 	
 	@Autowired
-	private DirectChannel channel;
+	private DirectChannel inputChannel;
+
+	@Autowired
+	private DirectChannel outputChannel;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringIntegrationApplication.class, args);
@@ -33,18 +36,18 @@ public class SpringIntegrationApplication implements ApplicationRunner {
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		
-		channel.subscribe(new MessageHandler() {
+		outputChannel.subscribe(new MessageHandler() {
 			
 			@Override
 			public void handleMessage(Message<?> message) throws MessagingException {
-				new PrintService().print((Message<String>) message);
+				System.out.println(message.getPayload());
 				
 			}
 		});
 		
 		Message<String> message = MessageBuilder.withPayload("Hello World, from the builder pattern")
 				.setHeader("newHeader", "newHeaderValue").build();
-		channel.send(message);
+		inputChannel.send(message);
 	}
 
 }
